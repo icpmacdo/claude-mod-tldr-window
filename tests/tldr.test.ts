@@ -143,6 +143,29 @@ test('a finished turn forks once, saves the TL;DR and draws it in the dock, inli
   }
 })
 
+test('the pane opens as the turn ends and says Summarizing… until the answer arrives', async ($, on) => {
+  const store = new Map<string, unknown>()
+  const opened: string[] = []
+  const clock = stubSession(on, store, opened)
+  on('model.fork', async () => {
+    await clock.sleep(2000)
+    return { value: { isAnswered: true, text: REPLY, usage: USAGE } }
+  })
+
+  await $.turn.complete(TURN)
+  await clock.advance(300)
+
+  expect(opened).toEqual(['tldr'])
+  expect(store.has('tldr:win-a')).toBe(false)
+  const dock = await $.ui.mount({ ...DOCK, surface: 'terminal' })
+  expect(await dock.find({ type: 'Text', text: 'Summarizing this session…' })).toBeDefined()
+
+  await clock.advance(2000)
+
+  expect(await dock.find({ type: 'Text', text: 'TL;DR window mod' })).toBeDefined()
+  expect(opened).toEqual(['tldr'])
+})
+
 test("a subagent's turn and an errored turn do not refresh", async ($, on) => {
   const store = new Map<string, unknown>()
   let forks = 0

@@ -100,6 +100,8 @@ async function refresh($: EngineInterface, engine: Engine): Promise<void> {
   if (isRunning) return
   isRunning = true
   await update($, isBusy, () => true)
+  // Open before the model call so the pane says "Summarizing…" the moment a turn ends, not seconds later.
+  await showPane($)
 
   try {
     const outcome = engine === 'haiku' ? await viaHaiku($) : await viaFork($)
@@ -127,7 +129,6 @@ async function refresh($: EngineInterface, engine: Engine): Promise<void> {
 
     const saved: Saved = { sessionId: await $.session.id(), cwd: await $.session.cwd(), tldr: next }
     await $.store.set(PREFIX + saved.sessionId, saved)
-    await showPane($)
     await refreshPeers($)
   } finally {
     isRunning = false
