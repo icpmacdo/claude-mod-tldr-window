@@ -1,0 +1,4 @@
+# Laid by Claude Code at each load from a folder you own; regenerated, never edited
+.claude-plugin/types/
+tsconfig.json
+.DS_Store

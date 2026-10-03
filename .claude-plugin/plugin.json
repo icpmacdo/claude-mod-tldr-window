@@ -1,0 +1,28 @@
+{
+  "name": "tldr-window",
+  "version": "0.1.0",
+  "description": "A side pane that keeps a TL;DR of what this Claude window is working on, refreshed after each turn from the cached transcript",
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "engine": {
+      "type": "string",
+      "title": "Summary engine",
+      "description": "fork: ask the session's own model over its cached transcript (full context, cache-read tokens). haiku: send a condensed digest of recent messages to Haiku (cheaper per call on big sessions, less context).",
+      "options": ["fork", "haiku"],
+      "default": "fork"
+    },
+    "refresh": {
+      "type": "string",
+      "title": "When to refresh",
+      "description": "every-turn: after each turn Claude finishes. manual: only when you run /tldr or press Refresh.",
+      "options": ["every-turn", "manual"],
+      "default": "every-turn"
+    },
+    "retitle_session": {
+      "type": "boolean",
+      "title": "Retitle the session",
+      "description": "Use the TL;DR title as the session title on your next prompt, so the window and /resume list name what it is doing. This replaces a name you gave with /rename.",
+      "default": true
+    }
+  }
+}
